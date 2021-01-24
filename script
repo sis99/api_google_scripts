@@ -1,0 +1,51 @@
+// clears the target spreadsheet, also for testing purposes or in case the trigger fails 
+function ClearContent() {
+  var target = SpreadsheetApp.openByUrl('insert the target spreadsheet's url'); 
+  var targetSheet = target.getSheetByName('insert the target spreadsheet's name');
+
+  targetSheet.getRange(2,1, targetSheet.getLastRow(), 9).clear();
+};
+
+function cloneGoogleSheet(ssA, ssB) { 
+  var source = SpreadsheetApp.openByUrl('insert source spreadsheet's url'); 
+  var sourceSheet = source.getSheetByName('insert source spreadsheet's name'); 
+ 
+  var target = SpreadsheetApp.openByUrl('insert target spreadsheet's url'); 
+  var targetSheet = target.getSheetByName('insert target spreadsheet's name'); 
+ 
+ // gets the column names from the source spreadsheet and sets them to start at A1 in the target spreadsheet
+  var SRange = sourceSheet.getRange(1, 1, 1, 9); 
+  var SData = SRange.getValues();
+  targetSheet.getRange(1,1, 1, 9).setValues(SData); 
+  
+ // gets all of the rows of data from source spreadsheet and copies them into target spreadsheet
+  var S1Range = sourceSheet.getRange(2, 1, sourceSheet.getLastRow(), 9);
+  var S1Data = S1Range.getValues();
+  targetSheet.getRange(2, 1, sourceSheet.getLastRow(), 9).setValues(S1Data); 
+  
+ };
+
+// gets all of the new rows added to the source spreadsheet, appends them to target spreadsheet, 
+// then deletes the old rows from target spreadsheet so that only the new ones remain
+
+function refresh() {
+  
+  var source = SpreadsheetApp.openByUrl('insert source spreadsheet's url'); 
+  var sourceSheet = source.getSheetByName('insert source spreadsheet's name');
+  var target = SpreadsheetApp.openByUrl('insert target spreadsheet's url'); 
+  var targetSheet = target.getSheetByName('insert target spreadsheet's name');
+  
+  var S2Range = sourceSheet.getRange(targetSheet.getLastRow()+1, 1, sourceSheet.getLastRow(), 9);
+  var S2Data = S2Range.getValues();
+  var S3Data = targetSheet.getRange(2, 1, sourceSheet.getLastRow(), 9).setValues(S2Data);
+  var maxRows = targetSheet.getMaxRows(); 
+  var lastRow = S3Data.getLastRow();
+  var deleteRows = maxRows-lastRow;
+
+  if (maxRows-lastRow != 0){
+  targetSheet.deleteRows(lastRow+1, deleteRows);
+  }
+  return S3Data; 
+  
+
+}; 
